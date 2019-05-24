@@ -30,31 +30,56 @@ namespace Assignment2_SD220.Controllers
 
             var brand = Context.CreditCards.FirstOrDefault(p => p.IdentificationNumber == formData.BrandId);
 
+            var payment = Mapper.Map<Payment>(formData);
+
             if (brand == null)
             {
+                Context.Payments.Add(payment);
+                payment.CreditCard = brand;
+                payment.PaymentSuccess = false;
+
+                Context.SaveChanges();
+
+
                 ModelState.AddModelError("Incorrect Brand ID", "Brand Id provided does not exist");
                 return BadRequest(ModelState);
             }
 
             if (formData.SecurityCode.Length > 4)
             {
+                Context.Payments.Add(payment);
+                payment.CreditCard = brand;
+                payment.PaymentSuccess = false;
+
+                Context.SaveChanges();
+
                 ModelState.AddModelError("Security Code Error", "Security Code can't be more than 4 digits");
                 return BadRequest(ModelState);
             }
 
             if (formData.SecurityCode.Length < 3)
             {
+                Context.Payments.Add(payment);
+                payment.CreditCard = brand;
+                payment.PaymentSuccess = false;
+
+                Context.SaveChanges();
+
                 ModelState.AddModelError("Security Code Error", "Security Code can't be less than 3 digits");
                 return BadRequest(ModelState);
             }
 
             if (formData.Amount <= 0)
             {
+                Context.Payments.Add(payment);
+                payment.CreditCard = brand;
+                payment.PaymentSuccess = false;
+
+                Context.SaveChanges();
+
                 ModelState.AddModelError("Amount Error", "The amount the system will charge the credit card. Needs to be greaterthan 0.");
                 return BadRequest(ModelState);
             }
-
-            var payment = Mapper.Map<Payment>(formData);
 
             Context.Payments.Add(payment);
             payment.CreditCard = brand;
